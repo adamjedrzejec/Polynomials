@@ -6,6 +6,7 @@ using namespace std;
 class Poly{
 private:
 	map <int, double, greater<int>> polyMap;
+	void eraseZeroCoefficients();
 public:
 	Poly();
 	Poly(double);
@@ -15,5 +16,5 @@ public:
 	friend Poly operator- (const Poly&, const Poly&);
 	friend Poly operator* (const Poly&, const Poly&);
 	Poly operator- () const;
-	double operator() (double);
+	double operator() (double) const;
 };

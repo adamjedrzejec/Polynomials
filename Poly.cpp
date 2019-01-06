@@ -1,6 +1,7 @@
+#include "Poly.h"
+
 #include <iostream>
 #include <math.h>
-#include "Poly.h"
 #include <map>
 
 Poly::Poly(){ }
@@ -12,7 +13,6 @@ Poly::Poly(double value){
 double & Poly::operator[] (unsigned int key){
 	return polyMap[key];
 }
-
 
 ostream & operator<< (ostream& os, const Poly& polynomial)
 {  
@@ -60,6 +60,8 @@ Poly operator+ (const Poly & p1, const Poly & p2){
 		result.polyMap[it->first] += it->second;
 	}
 
+	result.eraseZeroCoefficients();
+	
 	return result;
 }
 
@@ -76,6 +78,8 @@ Poly operator- (const Poly & p1, const Poly & p2){
 		result.polyMap[it->first] -= it->second;
 	}
 
+	result.eraseZeroCoefficients();
+	
 	return result;
 }
 
@@ -89,22 +93,32 @@ Poly operator* (const Poly & p1, const Poly & p2){
 			result.polyMap[it1->first + it2->first] += it1->second * it2->second;
 		}
 	}
-
+	
+	result.eraseZeroCoefficients();
+	
 	return result;
 }
 
 Poly Poly::operator- () const{
-	Poly result;
-	for(map<int, double >::const_iterator it = polyMap.begin(); it != polyMap.end(); it++){
-		result.polyMap[it->first] = -it->second;
-	}
-	return result;
+	return *this * (-1);
 }
 
-double Poly::operator() (double argument){
+double Poly::operator() (double argument) const {
 	double value = 0;
 	for(map<int, double >::const_iterator it = polyMap.begin(); it != polyMap.end(); it++){
 		value += pow(argument, it->first) * it->second;
 	}
 	return value;
+}
+
+void Poly::eraseZeroCoefficients() {
+	for(map<int, double >::iterator it = polyMap.begin(); it != polyMap.end();)
+	{
+		if(it->second == 0){
+			it = polyMap.erase(it);
+		}
+		else {
+			it++;
+		}
+	}
 }
